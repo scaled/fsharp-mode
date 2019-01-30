@@ -1,0 +1,8 @@
+   name: fsharp-mode
+ source: git:https://github.com/scaled/fsharp-mode.git
+version: 1.0
+descrip: Provides language support for F#.
+ weburl: https://github.com/scaled/fsharp-mode
+license: New BSD
+ depend: git:https://github.com/scaled/textmate-grammar.git
+ module: test

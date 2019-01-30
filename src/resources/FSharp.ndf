@@ -1,0 +1,554 @@
+name: fsharp
+scopeName: source.fsharp
+repository:
+ abstract_definition:
+  multi:
+   name: abstract.definition.fsharp
+   begin: \b(abstract)\s+(member)?(\s+\[\<.*\>\])?\s*([_\p{Alnum},\._`\s]+)(:)
+   bcaps: 1=keyword.fsharp 2=keyword.fsharp 3=support.function.attribute.fsharp 5=keyword.fsharp
+   end: \s*(with)\b|=|$
+   ecaps: 1=keyword.fsharp
+   patterns:
+    include: #comments
+    include: #common_declaration
+    single:
+     pattern: (\?{0,1})([\p{Alnum}'`^._]+)\s*(:)(\s*([\p{Alnum}'`^._]+)){0,1}
+     caps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp 3=keyword.symbol.fsharp 4=entity.name.type.fsharp
+    single:
+     pattern: (?!with|get|set\b)\b([\p{Alnum}'`^._]+)
+     caps: 1=entity.name.type.fsharp
+    include: #keywords
+ anonymous_functions:
+  multi:
+   name: function.anonymous
+   begin: \b(fun)\b
+   bcaps: 1=keyword.fsharp
+   end: (->)
+   ecaps: 1=keyword.fsharp
+   patterns:
+    include: #comments
+    multi:
+     begin: (\()
+     bcaps: 1=keyword.symbol.fsharp
+     end: \s*(?=(->))
+     ecaps: 1=keyword.symbol.fsharp
+     patterns:
+      include: #member_declaration
+    include: #variables
+ attributes:
+  multi:
+   name: support.function.attribute.fsharp
+   begin: \[\<
+   end: \>\]|\]
+   patterns:
+    include: $self
+ cexprs:
+  single:
+   name: cexpr.fsharp
+   pattern: \b(async|seq|promise|task|maybe|asyncMaybe|controller|scope|application|pipeline)\s*\{
+   caps: 0=keyword.fsharp
+ chars:
+  single:
+   name: char.fsharp
+   pattern: ('\\?.')
+   caps: 1=string.quoted.single.fsharp
+ comments:
+  multi:
+   name: comment.block.markdown.fsharp
+   begin: ^\s*(\(\*\*(?!\)))(?!\*\))$
+   bcaps: 1=comment.block.fsharp
+   end: ^(?!\\s*\\*\\)$
+   ecaps: 1=comment.block.fsharp
+   patterns:
+    include: text.html.markdown
+  single:
+   name: comment.block.markdown.fsharp.end
+   pattern: ^(\s*\*\)$)
+   caps: 1=comment.block.fsharp
+  multi:
+   name: comment.block.fsharp
+   begin: (\(\*(?!\)))
+   bcaps: 1=comment.block.fsharp
+   end: (\*\))
+   ecaps: 1=comment.block.fsharp
+  single:
+   name: comment.line.double-slash.fsharp
+   pattern: //.*$
+ common_binding_definition:
+  include: #comments
+  include: #attributes
+  multi:
+   begin: (:)\s*(\()\s*(static member|member)
+   bcaps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp 3=keyword.fsharp
+   end: (\))\s*((?=,)|(?=\=))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: (\^[\p{Alnum}'._]+)
+     caps: 1=entity.name.type.fsharp
+    include: #variables
+    include: #keywords
+  multi:
+   begin: (:)\s*(\()
+   bcaps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp
+   end: (\)\s*(([?\p{Alnum}'`^._ ]*)))
+   ecaps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+   patterns:
+    include: #tuple_signature
+  multi:
+   begin: (:)\s*(\^[\p{Alnum}'._]+)\s*(when)
+   bcaps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp 3=keyword.fsharp
+   end: (?=:)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     name: keyword.fsharp
+     pattern: \b(and|when|or)\b
+    single:
+     pattern: ([\p{Alnum}'^._]+)
+     caps: 1=entity.name.type.fsharp
+    single:
+     name: keyword.symbol.fsharp
+     pattern: (\(|\))
+  single:
+   pattern: (:)\s*([?\p{Alnum}'`^._ ]+)
+   caps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+  single:
+   pattern: (->)\s*(\()?\s*([?\p{Alnum}'`^._ ]+)*
+   caps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp 3=entity.name.type.fsharp
+  multi:
+   begin: (\*)\s*(\()
+   bcaps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp
+   end: (\)\s*(([?\p{Alnum}'`^._ ]+))+)
+   ecaps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+   patterns:
+    include: #tuple_signature
+  single:
+   pattern: (\*)(\s*([?\p{Alnum}'`^._ ]+))*
+   caps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+  multi:
+   begin: (<(?!\s*\)))
+   bcaps: 1=keyword.symbol.fsharp
+   end: ((?<!:)>)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: (,?)\s*([\p{Alnum}'`^._]+)
+     caps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+#    include: #generic_declaration
+  multi:
+   begin: (\{)
+   bcaps: 1=keyword.symbol.fsharp
+   end: (})
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    include: #record_signature
+  include: #definition
+  include: #variables
+  include: #keywords
+ common_declaration:
+  multi:
+   begin: \s*(->)\s*([\p{Alnum}'`^._ ]+)(<)
+   bcaps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp 3=keyword.symbol.fsharp
+   end: (>)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: ([\p{Alnum}'`^._ ]+)
+     caps: 1=entity.name.type.fsharp
+    include: #keywords
+  single:
+   pattern: \s*(->)\s*(?!with|get|set\b)\b([\p{Alnum}'`^._]+)
+   caps: 1=keyword.symbol.fsharp 2=entity.name.type.fsharp
+  multi:
+   begin: (\?{0,1})([\p{Alnum}'`^._]+)\s*(:)(\s*([?\p{Alnum}'`^._]+)(<))
+   bcaps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp 3=keyword.symbol.fsharp 4=keyword.symbol.fsharp 5=entity.name.type.fsharp
+   end: (>)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: ([\p{Alnum}'`^._ ]+)
+     caps: 1=entity.name.type.fsharp
+    include: #keywords
+ compiler_directives:
+  single:
+   name: compiler_directive.fsharp
+   pattern: \s?(#if|#elif|#else|#elseif|#endif|#light|#nowarn)
+ constants:
+  single:
+   name: constant.language.unit.fsharp
+   pattern: \(\)
+  single:
+   name: constant.numeric.floating-point.fsharp
+   pattern: \b-?[0-9][0-9_]*((\.([0-9][0-9_]*([eE][+-]??[0-9][0-9_]*)?)?)|([eE][+-]??[0-9][0-9_]*))
+  single:
+   name: constant.numeric.integer.nativeint.fsharp
+   pattern: \b(-?((0(x|X)[0-9a-fA-F][0-9a-fA-F_]*)|(0(o|O)[0-7][0-7_]*)|(0(b|B)[01][01_]*)|([0-9][0-9_]*)))
+  single:
+   name: constant.others.fsharp
+   pattern: \b(true|false|null|unit)\b
+ definition:
+  multi:
+   name: binding.fsharp
+   begin: \b(let mutable|static let mutable|let inline|let|member val|static member inline|static member|default|member|override|let!)(\s+rec|mutable)?(\s+\[\<.*\>\])?\s*(private|internal|public)?\s+(\[[^-=]*\]|[_\p{Alpha}]([_\p{Alnum},\._]+)*|``[_\p{Alpha}]([_\p{Alnum},\._`\s]+|(?<=,)\s)*)?
+   bcaps: 1=keyword.fsharp 2=keyword.fsharp 3=support.function.attribute.fsharp 4=keyword.fsharp 5=variable.fsharp
+   end: \s*(with\b|=|\n+=|(?<=\=))
+   ecaps: 1=keyword.fsharp
+   patterns:
+    include: #common_binding_definition
+  multi:
+   name: binding.fsharp
+   begin: \b(static val mutable|val mutable|val)(\s+rec|mutable)?(\s+\[\<.*\>\])?\s*(private|internal|public)?\s+(\[[^-=]*\]|[_\p{Alpha}]([_\p{Alnum},\._]+)*|``[_\p{Alpha}]([_\p{Alnum},\._`\s]+|(?<=,)\s)*)?
+   bcaps: 1=keyword.fsharp 2=keyword.fsharp 3=support.function.attribute.fsharp 4=keyword.fsharp 5=variable.fsharp
+   end: \n$
+   patterns:
+    include: #common_binding_definition
+ double_tick:
+  single:
+   name: variable.other.binding.fsharp
+   pattern: (``)(.*)(``)
+   caps: 1=string.quoted.single.fsharp 2=variable.other.binding.fsharp 3=string.quoted.single.fsharp
+ du_declaration:
+  multi:
+   name: du_declaration.fsharp
+   begin: \b(of)\b
+   bcaps: 1=keyword.fsharp
+   end: $|(\|)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    include: #comments
+    single:
+     pattern: ([\p{Alnum}'`<>^._]+|``[\p{Alnum}' <>^._]+``)\s*(:)\s*([\p{Alnum}'`<>^._]+|``[\p{Alnum}' <>^._]+``)
+     caps: 1=variable.parameter.fsharp 2=keyword.symbol.fsharp 3=entity.name.type.fsharp
+    single:
+     pattern: ([\p{Alnum}'`^._]+)|``([\p{Alnum}'^._ ]+)``
+     caps: 1=entity.name.type.fsharp
+    include: #keywords
+ generic_declaration:
+  multi:
+   begin: (:)\s*(\()\s*(static member|member)
+   bcaps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp 3=keyword.fsharp
+   end: (\))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    multi:
+     begin: (\()
+     bcaps: 1=keyword.symbol.fsharp
+     end: (\))
+     ecaps: 1=keyword.symbol.fsharp
+     patterns:
+      include: #member_declaration
+    single:
+     pattern: (('|\^)[\p{Alnum}'._]+)
+     caps: 1=entity.name.type.fsharp
+    include: #variables
+    include: #keywords
+  single:
+   name: keyword.fsharp
+   pattern: \b(private|to|public|internal|function|yield!|yield|class|exception|match|delegate|of|new|in|as|if|then|else|elif|for|begin|end|inherit|do|let\!|return\!|return|interface|with|abstract|property|union|enum|member|try|finally|and|when|use|use\!|struct|while|mutable)(?!')\b
+  single:
+   name: keyword.fsharp
+   pattern: :
+  include: #constants
+  single:
+   pattern: (('|\^)[\p{Alnum}'._]+)
+   caps: 1=entity.name.type.fsharp
+  multi:
+   begin: (<)
+   bcaps: 1=keyword.symbol.fsharp
+   end: (>)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: (('|\^)[\p{Alnum}'._]+)
+     caps: 1=entity.name.type.fsharp
+    include: #tuple_signature
+    include: #generic_declaration
+  single:
+   pattern: (?!when|and|or\b)\b([\p{Alnum}'`^._]+)
+   caps: 1=entity.name.type.fsharp
+  single:
+   pattern: (\|)
+   caps: 1=keyword.symbol.fsharp
+  include: #keywords
+ keywords:
+  single:
+   name: keyword.fsharp
+   pattern: \b(private|to|public|internal|function|yield!|yield|class|exception|match|delegate|of|new|in|as|if|then|else|elif|for|begin|end|inherit|do|let\!|return\!|return|interface|with|abstract|property|union|enum|member|try|finally|and|when|or|use|use\!|struct|while|mutable)(?!')\b
+  single:
+   name: keyword.symbol.grabbag.fsharp
+   pattern: (&&&|\|\|\||\^\^\^|~~~|<<<|>>>|\|>|\->|\<\-|:>|:\?>|:|\;|<>|@|\|\||&&|_|\.\.|\,|\+|\-|\*|\/|\^|\!|\>|\>\=|\>\>|\<|\<\=|\<\<|\[\||\|\]|\|)
+ member_declaration:
+  include: #comments
+  include: #common_declaration
+  multi:
+   begin: (:)\s*(\()\s*(static member|member)
+   bcaps: 1=keyword.symbol.fsharp 2=keyword.symbol.fsharp 3=keyword.fsharp
+   end: (\))\s*((?=,)|(?=\=))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    multi:
+     begin: (\()
+     bcaps: 1=keyword.symbol.fsharp
+     end: (\))
+     ecaps: 1=keyword.symbol.fsharp
+     patterns:
+      include: #member_declaration
+    single:
+     pattern: (\^[\p{Alnum}'._]+)
+     caps: 1=entity.name.type.fsharp
+    include: #variables
+    include: #keywords
+  single:
+   pattern: (\^[\p{Alnum}'._]+)
+   caps: 1=entity.name.type.fsharp
+  single:
+   name: keyword.fsharp
+   pattern: \b(and|when|or)\b
+  single:
+   pattern: (\?{0,1})([\p{Alnum}'`^._]+|``[\p{Alnum}'`^:,._]+``)\s*(:{0,1})(\s*([?\p{Alnum}'`<>._]+)){0,1}
+   caps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp 3=keyword.symbol.fsharp 4=entity.name.type.fsharp
+  include: #keywords
+ modules:
+  multi:
+   name: namespace.fsharp
+   begin: \b(namespace|module)\s*(public|internal|private)?\s+([\p{Alpha}][\p{Alnum}'_. ]*)
+   bcaps: 1=keyword.fsharp 2=keyword.fsharp 3=entity.name.section.fsharp
+   end: (\s?=|\s|$)
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     name: entity.name.section.fsharp
+     pattern: (\.)([A-Z][\p{Alnum}'_]*)
+     caps: 1=punctuation.separator.namespace-reference.fsharp 2=entity.name.section.fsharp
+  multi:
+   name: namespace.open.fsharp
+   begin: \b(open)\s+([\p{Alpha}][\p{Alnum}'_]*)(?=(\.[A-Z][\p{Alnum}_]*)*)
+   bcaps: 1=keyword.fsharp 2=entity.name.section.fsharp
+   end: (\s|$)
+   patterns:
+    single:
+     name: entity.name.section.fsharp
+     pattern: (\.)([\p{Alpha}][\p{Alnum}'_]*)
+     caps: 1=punctuation.separator.namespace-reference.fsharp 2=entity.name.section.fsharp
+  multi:
+   name: namespace.alias.fsharp
+   begin: ^\s*(module)\s+([A-Z][\p{Alnum}'_]*)\s*(=)\s*([A-Z][\p{Alnum}'_]*)
+   bcaps: 1=keyword.fsharp 2=entity.name.type.namespace.fsharp 3=punctuation.separator.namespace-definition.fsharp 4=entity.name.section.fsharp
+   end: (\s|$)
+   patterns:
+    single:
+     name: entity.name.section.fsharp
+     pattern: (\.)([A-Z][\p{Alnum}'_]*)
+     caps: 1=punctuation.separator.namespace-reference.fsharp 2=entity.name.section.fsharp
+ record_declaration:
+  multi:
+   begin: (\{)
+   bcaps: 1=keyword.symbol.fsharp
+   end: (?<=\})
+   patterns:
+    include: #comments
+    multi:
+     begin: (((mutable)\s[\p{Alpha}]+)|[\p{Alnum}'`<>^._]*)\s*((?<!:):(?!:))\s*
+     bcaps: 3=keyword.fsharp 4=keyword.symbol.fsharp
+     end: $|(;|\})
+     ecaps: 1=keyword.symbol.fsharp
+     patterns:
+      include: #comments
+      single:
+       pattern: ([\p{Alnum}'`^_ ]+)
+       caps: 1=entity.name.type.fsharp
+      include: #keywords
+    include: #compiler_directives
+    include: #constants
+    include: #strings
+    include: #chars
+    include: #double_tick
+    include: #definition
+    include: #attributes
+    include: #anonymous_functions
+    include: #keywords
+    include: #cexprs
+ record_signature:
+  single:
+   pattern: [\p{Alnum}'`^_ ]+(=)([\p{Alnum}'`^_ ]+)
+   caps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp
+  multi:
+   begin: (\{)
+   bcaps: 1=keyword.symbol.fsharp
+   end: (})
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: [\p{Alnum}'`^_ ]+(=)([\p{Alnum}'`^_ ]+)
+     caps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp
+    include: #record_signature
+  include: #keywords
+ records:
+  multi:
+   name: record.fsharp
+   begin: \b(type)[\s]+(private|internal|public)?\s*
+   bcaps: 1=keyword.fsharp 2=keyword.fsharp
+   end: \s*((with)|((as)\s+([\p{Alnum}']+))|(=)|[\n=]|(\(\)))
+   ecaps: 2=keyword.fsharp 3=keyword.fsharp 4=keyword.fsharp 5=variable.parameter.fsharp 6=keyword.symbol.fsharp 7=constant.language.unit.fsharp
+   patterns:
+    include: #comments
+    include: #attributes
+    single:
+     pattern: ([\p{Alnum}'^._]+)
+     caps: 1=entity.name.type.fsharp
+    multi:
+     begin: (<)
+     bcaps: 1=keyword.fsharp
+     end: ((?<!:)>)
+     ecaps: 1=keyword.fsharp
+     patterns:
+      single:
+       pattern: (('|\^)``[\p{Alnum}`^:,._ ]+``|('|\^)[\p{Alnum}`^:._]+)
+       caps: 1=entity.name.type.fsharp
+      single:
+       name: keyword.fsharp
+       pattern: \b(interface|with|abstract|and|when|or|not|struct|equality|comparison|unmanaged|delegate|enum)\b
+      multi:
+       begin: (\()
+       bcaps: 1=keyword.symbol.fsharp
+       end: (\))
+       ecaps: 1=keyword.symbol.fsharp
+       patterns:
+        single:
+         pattern: (static member|member|new)
+         caps: 1=keyword.fsharp
+        include: #common_binding_definition
+      single:
+       pattern: ([\p{Alnum}'`^._]+)
+       caps: 1=entity.name.type.fsharp
+      include: #keywords
+    single:
+     pattern: \s*(private|internal|public)
+     caps: 1=keyword.symbol.fsharp 2=keyword.fsharp
+    multi:
+     begin: (\()
+     bcaps: 1=keyword.symbol.fsharp
+     end: \s*(?=(=)|[\n=]|(\(\))|(as))
+     ecaps: 1=keyword.symbol.fsharp
+     patterns:
+      include: #member_declaration
+    include: #keywords
+ string_formatter:
+  single:
+   name: entity.name.format.specifier.fsharp
+   pattern: (%0?-?(\d+)?((a|t)|(\.\d+)?(f|F|e|E|g|G|M)|(b|c|s|d|i|x|X|o|u)|(s|b|O)|(\+?A)))
+   caps: 1=keyword.format.specifier.fsharp
+ strings:
+  multi:
+   name: string.quoted.literal.fsharp
+   begin: (?=[^\\])(@")
+   bcaps: 1=punctuation.definition.string.begin.fsharp
+   end: (")(?!")
+   ecaps: 1=punctuation.definition.string.end.fsharp
+   patterns:
+    single:
+     name: constant.character.string.escape.fsharp
+     pattern: "(")
+  multi:
+   name: string.quoted.triple.fsharp
+   begin: (?=[^\\])(""")
+   bcaps: 1=punctuation.definition.string.begin.fsharp
+   end: (""")
+   ecaps: 1=punctuation.definition.string.end.fsharp
+   patterns:
+    include: #string_formatter
+  multi:
+   name: string.quoted.double.fsharp
+   begin: (?=[^\\])(")
+   bcaps: 1=punctuation.definition.string.begin.fsharp
+   end: (")
+   ecaps: 1=punctuation.definition.string.end.fsharp
+   patterns:
+    single:
+     name: punctuation.separator.string.ignore-eol.fsharp
+     pattern: \\$[ \t]*
+    single:
+     name: constant.character.string.escape.fsharp
+     pattern: \\([\\''ntbr]|u[a-fA-F0-9]{4}|u[a-fA-F0-9]{8})
+    single:
+     name: invalid.illeagal.character.string.fsharp
+     pattern: \\(?![\\''ntbr]|u[a-fA-F0-9]{4}|u[a-fA-F0-9]{8}).
+    include: #string_formatter
+ strp_inlined:
+  multi:
+   begin: (\()
+   bcaps: 1=keyword.symbol.fsharp
+   end: (\))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    include: #strp_inlined_body
+ strp_inlined_body:
+  include: #comments
+  include: #anonymous_functions
+  single:
+   pattern: (\^[\p{Alnum}'._]+)
+   caps: 1=entity.name.type.fsharp
+  single:
+   name: keyword.fsharp
+   pattern: \b(and|when|or)\b
+  multi:
+   begin: (\()
+   bcaps: 1=keyword.symbol.fsharp
+   end: (\))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    include: #strp_inlined_body
+  single:
+   pattern: (static member|member)\s*([\p{Alnum}'`<>^._]+|``[\p{Alnum}' <>^._]+``)\s*(:)
+   caps: 1=keyword.fsharp 2=variable.fsharp 3=keyword.symbol.fsharp
+  include: #compiler_directives
+  include: #constants
+  include: #strings
+  include: #chars
+  include: #double_tick
+  include: #keywords
+  include: #definition
+  include: #attributes
+  include: #keywords
+  include: #cexprs
+ tuple_signature:
+  single:
+   pattern: (([?\p{Alnum}'`^._ ]+))+
+   caps: 1=entity.name.type.fsharp
+  multi:
+   begin: (\()
+   bcaps: 1=keyword.symbol.fsharp
+   end: (\))
+   ecaps: 1=keyword.symbol.fsharp
+   patterns:
+    single:
+     pattern: (([?\p{Alnum}'`^._ ]+))+
+     caps: 1=entity.name.type.fsharp
+    include: #tuple_signature
+  include: #keywords
+ variables:
+  single:
+   name: constant.language.unit.fsharp
+   pattern: \(\)
+  single:
+   pattern: (\?{0,1})(``[\p{Alnum}'`^:,._]+``|[\p{Alnum}'`<>^._]\w*)
+   caps: 1=keyword.symbol.fsharp 2=variable.parameter.fsharp
+patterns:
+ include: #compiler_directives
+ include: #comments
+ include: #constants
+ include: #strings
+ include: #chars
+ include: #double_tick
+ include: #definition
+ include: #abstract_definition
+ include: #attributes
+ include: #modules
+ include: #anonymous_functions
+ include: #du_declaration
+ include: #record_declaration
+ include: #records
+ include: #strp_inlined
+ include: #keywords
+ include: #cexprs
