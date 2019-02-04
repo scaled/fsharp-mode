@@ -15,8 +15,8 @@ class FSharpGrammarPlugin extends GrammarPlugin {
   override def grammars = Map("source.fsharp" -> "FSharp.ndf")
 
   override def effacers = List(
+    effacer("comment.line.triple-slash", docStyle),
     effacer("comment.line", commentStyle),
-    effacer("comment.block", docStyle),
     effacer("constant", constantStyle),
     effacer("invalid", invalidStyle),
     effacer("string", stringStyle),

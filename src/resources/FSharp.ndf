@@ -72,6 +72,9 @@ repository:
    end: (\*\))
    ecaps: 1=comment.block.fsharp
   single:
+   name: comment.line.triple-slash.fsharp
+   pattern: ///.*$
+  single:
    name: comment.line.double-slash.fsharp
    pattern: //.*$
  common_binding_definition:
