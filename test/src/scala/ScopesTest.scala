@@ -13,7 +13,7 @@ import scaled.impl.BufferImpl
 
 class FSharpScopesTest {
 
-  // @Test def dumpGrammar () {
+  // @Test def dumpGrammar () :Unit = {
   //   val plugin = new FSharpGrammarPlugin()
   //   plugin.grammar.print(System.out)
   // }
@@ -41,7 +41,7 @@ class FSharpScopesTest {
 
   val plugin = new FSharpGrammarPlugin()
 
-  @Test def testRecordScopes () {
+  @Test def testRecordScopes () :Unit = {
     // val code = ("type ProjectManager (checker :FSharpChecker) =\n" +
     //             "  let knownSolutions = new Dictionary<String, list<FileInfo>>()")
     val code = ("let foo :List<number> = bar")
@@ -53,11 +53,11 @@ class FSharpScopesTest {
     val start = 0  ; val end = buffer.lines.length
     start until end foreach { ll =>
       println(buffer.line(ll))
-      scoper.showScopes(ll) foreach { s => println(ll + ": " + s) }
+      scoper.showScopes(ll) foreach { s => println(s"$ll: $s") }
     }
   }
 
-  // @Test def testStylesLink () {
+  // @Test def testStylesLink () :Unit = {
   //   val buffer = BufferImpl(new TextStore("Test.fs", "", testFSharpCode))
   //   val scoper = Grammar.testScoper(Seq(plugin.grammar("source.fsharp")), buffer,
   //                                   List(new Selector.Processor(plugin.effacers)))
